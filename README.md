@@ -14,6 +14,6 @@ This project is about an Arduino/Genuino compatible binary clock.
 ## Features that turn clock into gadget:
  * Display Effect Modes (blink, flicker, heartbeat)
  * Command for display arbitrary numbers in binary format
- * WLAN module allows IOT operating mode (see [Interface](Interface.md) for more details)
+ * WLAN module allows IOT operating mode (see [Interfaces](Interfaces.md) for more details)
  
 ![picture of binary clock](picture.jpg)
