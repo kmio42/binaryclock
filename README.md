@@ -1,7 +1,7 @@
 # Binary Clock
 This project is about an Arduino/Genuino compatible binary clock.
 
-Main features:
+## Main features:
  * Programmable via Arduino IDE and simple USB-cable (hardware compatible with Arduino Nano)
  * Adaption of brightness to ambient brightness
  * Ultra dark night mode for sleeping in dark rooms
@@ -11,8 +11,9 @@ Main features:
  * Time synchronization per WLAN
  * Command line mode via serial console
 
-Features that turn clock into gadget:
+## Features that turn clock into gadget:
  * Display Effect Modes (blink, flicker, heartbeat)
  * Command for display arbitrary numbers in binary format
+ * WLAN module allows IOT operating mode (see [Interface](Interface.md) for more details)
  
 ![picture of binary clock](picture.jpg)
