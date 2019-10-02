@@ -1,13 +1,13 @@
 # Interfaces
  
 The clock provides besides the keys two powerful interfaces:
-* USB-Serial Interface
-* Wifi Interface
+ * USB-Serial Interface 
+ * Wifi Interface
  
 Both interfaces share same UART of Microcontroller in a way,
 that both active at same time would lead to an undeterministic
 behaviour. This drawback is due to the fact, that originally
-Wifi interface was just intended for NTP time synchronization
+Wifi interface just was intended for NTP time synchronization
 and USB Interface for a simple programming method.
  
 Nevertheless both interfaces are easily extendible for sending
