@@ -27,7 +27,7 @@ void handleRoot() {
       delay(10);
       if(Serial.available()) {
         timeout = 3;
-        message += Serial.read();
+        message += (char) Serial.read();
       }
     }
     serial_commands_.AttachSerial(&Serial);
@@ -38,7 +38,7 @@ void handleRoot() {
 
 void setup() {
   Serial.begin(9600);
-  Serial.println("");
+  Serial.println("\r\nstarted");
   init_cmds();
   server.on("/", handleRoot);
   server.begin();

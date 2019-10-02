@@ -10,7 +10,7 @@
 extern ESP8266WebServer server;
 
 static char serial_command_buffer_[128];
- SerialCommands serial_commands_(&Serial, serial_command_buffer_, sizeof(serial_command_buffer_), "\n", " ");
+ SerialCommands serial_commands_(&Serial, serial_command_buffer_, sizeof(serial_command_buffer_), "\r\n", " ");
 static WiFiManager wifiManager;
 static WiFiUDP udp;
 static HTTPClient http;
@@ -19,17 +19,16 @@ static byte packetBuffer[ NTP_PACKET_SIZE]; //buffer to hold incoming and outgoi
 
 
 static void cmd_unrecognized(SerialCommands* sender, const char* cmd);
-static void cmd_connect(SerialCommands* sender);
+static void cmd_getip(SerialCommands* sender);
 static void cmd_gethttp(SerialCommands* sender);
 static void cmd_gethttps(SerialCommands* sender);
 static void cmd_settime(SerialCommands* sender);
 static void cmd_connection_status(SerialCommands* sender);
 static void cmd_autoconfig(SerialCommands* sender);
-static void wifiConfigCallback(WiFiManager *myWiFiManager);
 static void sendNTP_packet(char *server);
 
 SerialCommand cmds[] = {
-  SerialCommand("con", cmd_connect),
+  SerialCommand("getip", cmd_getip),
   SerialCommand("GET", cmd_gethttp),
   SerialCommand("GETS", cmd_gethttps),
   SerialCommand("ntp", cmd_settime),
@@ -43,7 +42,7 @@ void init_cmds() {
   }
   
   serial_commands_.SetDefaultHandler(cmd_unrecognized);
-  wifiManager.setDebugOutput(true);
+  //wifiManager.setDebugOutput(true);
   udp.begin(1337);
 
 }
@@ -52,14 +51,16 @@ void readcmd() {
     serial_commands_.ReadSerial();
 }
 
-static void cmd_connect(SerialCommands* sender) {
+static void cmd_getip(SerialCommands* sender) {
+  sender->GetSerial()->print("ip ");
   sender->GetSerial()->println(WiFi.localIP());
 }
+
 static void cmd_gethttps(SerialCommands* sender) {
    char* param = sender->Next();
    if(param == NULL) return;
    std::unique_ptr<BearSSL::WiFiClientSecure>client(new BearSSL::WiFiClientSecure);
-  client->setInsecure();
+   client->setInsecure();
 
   if(http.begin(*client,param)) {
     int httpCode = http.GET();
@@ -75,6 +76,7 @@ static void cmd_gethttps(SerialCommands* sender) {
     sender->GetSerial()->println("httpresult -20");
   }
 }
+
 static void cmd_gethttp(SerialCommands* sender) {
    char* param = sender->Next();
    if(param == NULL) return;
@@ -134,6 +136,7 @@ static void cmd_settime(SerialCommands* sender) {
   sender->GetSerial()->print(year());
   sender->GetSerial()->println(" UTC");
 }
+
 static void cmd_connection_status(SerialCommands* sender) {
   sender->GetSerial()->print("wifistat ");
   sender->GetSerial()->println(WiFi.status());
@@ -146,14 +149,12 @@ static void cmd_autoconfig(SerialCommands* sender) {
     sender->GetSerial()->println("wifistat -2");
     return;
   }
-  sender->GetSerial()->println("wifistat 1");
+  sender->GetSerial()->print("wifistat ");
+  sender->GetSerial()->println(WiFi.status());
 }
     
 static void cmd_unrecognized(SerialCommands* sender, const char* cmd)
 {
-}
-static void wifiConfigCallback(WiFiManager *myWiFiManager) {
-  Serial.println("wifistat -1");
 }
 
 static void sendNTP_packet(char *server) {
