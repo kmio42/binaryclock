@@ -5,6 +5,7 @@ uint8_t BinaryClockHAL::trig;
 unsigned int BinaryClockHAL::brightness;
 unsigned int BinaryClockHAL::frequency;
 uint8_t BinaryClockHAL::minbright;
+uint8_t BinaryClockHAL::nightbright;
 uint8_t BinaryClockHAL::key_state;      // debounced and inverted key state:
 uint8_t BinaryClockHAL::key_press;      // key press detect
 uint8_t BinaryClockHAL::key_rpt;      // key long press and repeat
@@ -13,7 +14,6 @@ uint8_t BinaryClockHAL::key_rpt;      // key long press and repeat
 ISR (TIMER1_OVF_vect) {
   static uint8_t col = 1;
   static uint8_t trigger = 60;
-  
   
   PORTD = 0;
   DDRB = 0;
@@ -27,11 +27,11 @@ ISR (TIMER1_OVF_vect) {
   PORTD = BinaryClockHAL::leds[col];
   DDRD  = BinaryClockHAL::leds[col];
 
-  if(BinaryClockHAL::minbright) {
+  /*if(BinaryClockHAL::minbright) {
     PORTD = 0; 
     DDRB = 0;
     DDRD = 0;
-  }
+  }*/
 
   if((--trigger) == 0) {
     trigger=BinaryClockHAL::trig;
@@ -104,12 +104,18 @@ static void BinaryClockHAL::init(unsigned int frequency) {
   OCR1A = F_CPU / frequency / 6; // 6kHz horizontal update rate => 1kHz Display update rate
   
   trig = (int) frequency*6/100;
+  pinMode(A2, OUTPUT);
+  digitalWrite(A2, LOW);
+  analogReference(INTERNAL);
 }
 
 static void BinaryClockHAL::display(uint8_t row1,uint8_t row2,uint8_t row3) {
   uint8_t i=0;
   for(i=0;i<6;i++) {
-    leds[i]=((row1&1)<<PD5) | ((row2&1)<<PD6) | ((row3&1)<<PD7);
+    if(!minbright)
+      leds[i]=((row1&1)<<PD5) | ((row2&1)<<PD6) | ((row3&1)<<PD7);
+    else
+      leds[i]=((row1&1)<<PD2) | ((row2&1)<<PD3) | ((row3&1)<<PD4);
     row1>>=1;
     row2>>=1;
     row3>>=1;
@@ -121,12 +127,26 @@ static void BinaryClockHAL::setBrightness(uint8_t brightness) {
       brightness = 100;
     }
     if(brightness < 57) {
-      minbright = 1;
+      /*
+       * bugfix to reduce flash, if switch from day to night
+       * Problem: night/day depends on rows, set by display-Method, not set
+       * from interrupt.
+       */
+      if(minbright == 0) {
+        for(int i = 0; i < 6; i++)
+          leds[i] <<=3;
+      }
+      minbright = 1; 
+      OCR1B = pgm_read_word_near(pwm_table + brightness);
     } else {
       minbright = 0;
       OCR1B = pgm_read_word_near(pwm_table + brightness-49);
     }
     BinaryClockHAL::brightness = brightness;
+}
+
+static void BinaryClockHAL::wifi_power(bool onoff) {
+  digitalWrite(A2,onoff);
 }
 
 static uint8_t BinaryClockHAL::getKeyRpt( uint8_t key_mask )

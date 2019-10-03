@@ -1,4 +1,4 @@
 #include "config.h"
 
-int ClockConfig::timezone;
-boolean ClockConfig::summerWinterSwitch;
+int ClockConfig::timezone = 1;
+boolean ClockConfig::summerWinterSwitch = true;

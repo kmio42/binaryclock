@@ -13,11 +13,13 @@ SerialCommand SerialInterface::cmds[] = {
   SerialCommand("s", cmd_keySet),
   SerialCommand("h", cmd_help),
   SerialCommand("disp", cmd_disp),
-  SerialCommand("effect", cmd_effect)
+  SerialCommand("effect", cmd_effect),
+  SerialCommand("amb", cmd_ambient)
+  //SerialCommand("wifistat", cmd_wifistat)
 };
 
-SerialInterface::SerialInterface(Stream *serial, BinaryClock *binClock):
-    serial_commands_(serial, serial_command_buffer_, sizeof(serial_command_buffer_), "\n", " ")
+SerialInterface::SerialInterface(Stream *serial, BinaryClock *binClock): serial(serial),
+    serial_commands_(serial, serial_command_buffer_, sizeof(serial_command_buffer_), "\r\n", " ")
     {
   SerialInterface::binClock = binClock;
   for(int i = 0; i < sizeof(cmds)/sizeof(cmds[0]); i++) {
@@ -27,8 +29,19 @@ SerialInterface::SerialInterface(Stream *serial, BinaryClock *binClock):
   serial_commands_.SetDefaultHandler(cmd_unrecognized);
 
 }
+void SerialInterface::addCmd(SerialCommand *cmd) {
+  serial_commands_.AddCommand(cmd);
+}
+
 void SerialInterface::readSerial() {
     serial_commands_.ReadSerial();
+}
+void SerialInterface::activate(boolean active) {
+  if(active) {
+    serial_commands_.AttachSerial(serial);
+  }
+  else
+    serial_commands_.DetachSerial();
 }
 
 void SerialInterface::helloMsg() {
@@ -193,4 +206,17 @@ void SerialInterface::cmd_effect(SerialCommands* sender) {
   else {
     binClock->setDisplayEffect(BinaryClock::DISPEFFECT::NORMAL);
   }
+}
+
+void SerialInterface::cmd_ambient(SerialCommands* sender) {
+  sender->GetSerial()->println(analogRead(A7));
+}
+void SerialInterface::cmd_wifistat(SerialCommands* sender) {
+  char *param = sender->Next();
+  if(param == NULL) {
+        sender->GetSerial()->println(F("wifistat - no parameter"));
+
+  }
+  sender->GetSerial()->print("wifistat ");
+  sender->GetSerial()->println(param);
 }

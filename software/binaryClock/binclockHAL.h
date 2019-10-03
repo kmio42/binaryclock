@@ -15,6 +15,7 @@ public:
     
     static void display(uint8_t row1, uint8_t row2, uint8_t row3);
     static void setBrightness(uint8_t brightness);
+    static void wifi_power(bool onoff);
 
     static uint8_t getKeyShort( uint8_t key_mask );
     static uint8_t getKeyLong( uint8_t key_mask );
@@ -28,6 +29,7 @@ public:
     static uint8_t leds[6];
     static unsigned int brightness;
     static uint8_t minbright;
+    static uint8_t nightbright;
     static uint8_t trig;
  
 private:
