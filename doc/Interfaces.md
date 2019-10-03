@@ -16,7 +16,8 @@ commands.
 ## USB-Serial Interface
 Features:
 * provide an Arduino compatible programming Interface
-* provide command line interface to microcontroller
+* provide command line interface to microcontroller (possible commands are mentioned in [Interfaces
+(Interfaces.md)
 
 ## Wifi Interface
 This interface is realized by powerful ESP8366 module with customized
