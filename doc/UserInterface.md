@@ -47,4 +47,11 @@ command line interface accepts following commands:
 
 for background details look at: [Interfaces](Interfaces.md)
 
-
+## WLAN Interface
+If ESP8266 module is connected to a WLAN, it provides an http-server on port 80, to interact with serial command line interface. If opened in browser, it shows up: "CMD-Line Binary-Clock".
+The arguments given by HTTP-GET request are converted to a command on serial interface. The answer of clock microcontroller is returned in payload.
+For example:
+**192.168.x.x/effect=blink**
+becomes the serial command:
+**effect blink**
+so display of clock begins to blink
