@@ -1,5 +1,15 @@
 # Software Architecture
 
+## Needed Libraries
+
+* [RTCLib](https://github.com/adafruit/RTClib)
+* [Time](https://github.com/kmio42/Time)
+* [SerialCommand](https://github.com/ppedro74/Arduino-SerialCommands)
+
+For ESP8266 Wifi Module:
+
+* [WiFiManager](https://github.com/tzapu/WiFiManager)
+
 ## Classes
 
 ### Arduino Project (binary.ino)
