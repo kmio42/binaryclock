@@ -2,6 +2,10 @@
 
 ## Classes
 
+### Arduino Project (binary.ino)
+
+Setup objects and contains clue logic. It handles event propagation in non-blocking main-loop.
+
 ### BinaryClockHAL
 
 This class encapsulates the complete hardware. 
