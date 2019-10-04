@@ -38,12 +38,12 @@ Features:
 ### API for Developers
 The firmware for ESP8266 extension of clock (wifiExtension) supports following commands from serial interface of clock:
 
-* getip - return IP address or string *(IP unset)* with **ip *IP*** command
-* stat - return status code of wifi connection (arduino wifi status enum) with **wifistat *status*** command
-* conf - start wifi configuration portal (module is set up as access point)
-* ntp - get time per NTP and respond with **st *time*** command for clock
-* GET *URL* - perform an http get request - return **httpresult *result code*** command, pass payload afterwards to serial interface
-* GETS *URL* - perform an https get request - return **httpresult *result code*** command, pass payload afterwards to serial 
+* `getip` - return IP address or string *(IP unset)* with `ip `*`IP`* command
+* `stat` - return status code of wifi connection (arduino wifi status enum) with `wifistat `*`status`* command
+* `conf` - start wifi configuration portal (module is set up as access point)
+* `ntp` - get time per NTP and respond with `st `*`time`* command for clock
+* `GET `*`URL`* - perform an http get request - return `httpresult `*`result code`* command, pass payload afterwards to serial interface
+* `GETS `*`URL`* - perform an https get request - return `httpresult `*`result code`* command, pass payload afterwards to serial 
 
 If module is connected to a WLAN, it provides an http-server on port 80, to interact with serial command line interface. If opened in browser, it shows up: "CMD-Line Binary-Clock".
 The arguments given by HTTP-GET request are converted to a command on serial interface. The answer of clock microcontroller is returned in payload.
