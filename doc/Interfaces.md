@@ -16,11 +16,10 @@ commands.
 ## USB-Serial Interface
 Features:
 * provide an Arduino compatible programming Interface
-* provide command line interface to microcontroller (possible commands are mentioned in [Interfaces
-(Interfaces.md)
+* provide command line interface to microcontroller - possible commands are mentioned in [User Interface](UserInterface.md)
 
 ## Wifi Interface
-This interface is realized by powerful ESP8366 module with customized
+This interface is realized by powerful ESP8266 module with customized
 firmware. Although module is much more powerful than main processor,
 it has a strict slave role, so enable pin can only set by microcontroller.
 
@@ -35,3 +34,25 @@ Features:
 - [x] provides a rudimentary interface for converting serial to wifi by providing a webserver
 - [ ] serial interface in both, access point and client mode
 - [ ] configuration page offer additional configuration options for binary clock, like switching times for night mode
+
+### API for Developers
+The firmware for ESP8266 extension of clock (wifiExtension) supports following commands from serial interface of clock:
+
+* getip - return IP address or string *(IP unset)* with **ip *IP*** command
+* stat - return status code of wifi connection (arduino wifi status enum) with **wifistat *status*** command
+* conf - start wifi configuration portal (module is set up as access point)
+* ntp - get time per NTP and respond with **st *time*** command for clock
+* GET *URL* - perform an http get request - return **httpresult *result code*** command, pass payload afterwards to serial interface
+* GETS *URL* - perform an https get request - return **httpresult *result code*** command, pass payload afterwards to serial 
+
+If module is connected to a WLAN, it provides an http-server on port 80, to interact with serial command line interface. If opened in browser, it shows up: "CMD-Line Binary-Clock".
+The arguments given by HTTP-GET request are converted to a command on serial interface. The answer of clock microcontroller is returned in payload.
+
+For example:
+1. **192.168.x.x/effect=blink**
+1. is converted to following serial command by ESP8266:
+1. **effect blink**
+1. so display of clock begins to blink
+
+* Note: The first key becomes the serial command, all following values (also for other keys) are concatenated by space
+
