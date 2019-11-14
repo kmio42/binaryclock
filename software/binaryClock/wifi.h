@@ -28,6 +28,7 @@ public:
   static void setStarted();
   static bool ntp_request();
   static void config_menu();
+  static void update();
   
   static void cmd_ip(SerialCommands* sender);
   static void cmd_started(SerialCommands* sender);

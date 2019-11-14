@@ -114,9 +114,11 @@ void WifiESP::cmd_wifistat(SerialCommands* sender) {
     sender->GetSerial()->println("unknown wifistat");
     return;
   }
-  sender->GetSerial()->println("hh");
-
   wifistat = atoi(stat_str);
+}
+void WifiESP::update() {
+  power_on(true);
+  Serial.println("update");
 }
 void WifiESP::cmd_httpresult(SerialCommands* sender) {
   

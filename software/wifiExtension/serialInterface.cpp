@@ -7,7 +7,14 @@
 #include <TimeLib.h>
 #include <ESP8266HTTPClient.h>
 #include <WiFiClientSecureBearSSL.h>
+#include <ESP8266HTTPUpdateServer.h>
+
+const char* update_path = "/firmware";
+const char* update_username = "admin";
+const char* update_password = "admin";
+
 extern ESP8266WebServer server;
+ESP8266HTTPUpdateServer httpUpdater;
 
 static char serial_command_buffer_[128];
  SerialCommands serial_commands_(&Serial, serial_command_buffer_, sizeof(serial_command_buffer_), "\r\n", " ");
@@ -25,6 +32,7 @@ static void cmd_gethttps(SerialCommands* sender);
 static void cmd_settime(SerialCommands* sender);
 static void cmd_connection_status(SerialCommands* sender);
 static void cmd_autoconfig(SerialCommands* sender);
+static void cmd_update(SerialCommands* sender);
 static void sendNTP_packet(char *server);
 
 SerialCommand cmds[] = {
@@ -33,7 +41,8 @@ SerialCommand cmds[] = {
   SerialCommand("GETS", cmd_gethttps),
   SerialCommand("ntp", cmd_settime),
   SerialCommand("stat", cmd_connection_status),
-  SerialCommand("conf", cmd_autoconfig)
+  SerialCommand("conf", cmd_autoconfig),
+  SerialCommand("update", cmd_update)
 };
 
 void init_cmds() {
@@ -95,6 +104,17 @@ static void cmd_gethttp(SerialCommands* sender) {
   }else {
     sender->GetSerial()->println("httpresult -20");
   }
+}
+
+static void cmd_update(SerialCommands* sender) {
+ // ArduinoOTA.setHostname("Binaryclock");
+
+  char* param = sender->Next();
+  if(param != NULL) {
+   // ArduinoOTA.setPassword(param);
+  }
+  httpUpdater.setup(&server, update_path, update_username, update_password);
+
 }
 
 static void cmd_settime(SerialCommands* sender) {
