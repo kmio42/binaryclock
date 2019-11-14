@@ -12,7 +12,7 @@ SerialInterface interface(&Serial,&binClock);
 unsigned long nextDispUpdate = 0;
 unsigned long nextTimeUpdateRTC = 0;
 unsigned long nextTimeUpdateNTP = 0;
-unsigned long nextTimeUpdateESP_off = 30000UL;
+unsigned long nextTimeUpdateESP_off = 0;
 unsigned int ambientLight;
 
 bool wifi_config_menu = false;
@@ -35,7 +35,7 @@ void setup() {
   BinaryClockHAL::init();
   WifiESP::init(&interface);
   BinaryClockHAL::setBrightness(100);
-//  binClock.setBrightnessType(BinaryClock::BRIGHTNESSTYPE::AMBIENT);
+  binClock.setBrightnessType(BinaryClock::BRIGHTNESSTYPE::AMBIENT);
   BinaryClock::rtcGet();
   if(timeStatus() != timeSet) {
     while(1) {
@@ -50,7 +50,6 @@ void setup() {
     WifiESP::config_menu();
     binClock.setDisplayEffect(BinaryClock::DISPEFFECT::BLINK);
     nextTimeUpdateNTP = millis() + 300000;
-    nextTimeUpdateESP_off = millis() + 305000;
   }
   interface.helloMsg();
 }
@@ -60,14 +59,13 @@ void loop() {
   
   if(BinaryClockHAL::getKeyShort(BinaryClockHAL::Key::MINUS)) {
     binClock.keyPress(BinaryClock::SOFTKEY::KEY_MINUS);
-    Serial.println("stat");
   }
   if(BinaryClockHAL::getKeyShort(BinaryClockHAL::Key::PLUS)) {
     binClock.keyPress(BinaryClock::SOFTKEY::KEY_PLUS);
   }  
   if(BinaryClockHAL::getKeyLong(BinaryClockHAL::Key::SET)) {
     binClock.keyPress(BinaryClock::SOFTKEY::KEY_SET);
- //   Serial.println("conf");
+    WifiESP::update();
   }
 
   if(millis() > nextDispUpdate) {
@@ -92,7 +90,8 @@ void loop() {
     }
   }
   
-  if(millis() > nextTimeUpdateESP_off) {
+  if(nextTimeUpdateESP_off && millis() > nextTimeUpdateESP_off) {
+    nextTimeUpdateESP_off = 0;
     WifiESP::power_soft_off();
   }
 
