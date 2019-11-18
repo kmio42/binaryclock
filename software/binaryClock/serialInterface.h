@@ -24,8 +24,8 @@ class SerialInterface {
     static void cmd_keySet(SerialCommands* sender);
     static void cmd_effect(SerialCommands* sender);
     static void cmd_ambient(SerialCommands* sender);
-    static void cmd_wifistat(SerialCommands* sender);
-
+    static void cmd_set(SerialCommands* sender);
+    static void cmd_save(SerialCommands* sender);    
   private:
     SerialCommands serial_commands_;
     static SerialCommand cmds[];

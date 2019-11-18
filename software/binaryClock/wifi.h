@@ -41,7 +41,7 @@ private:
 	static bool powerstat;
  	static enum WL_STATUS wifistat;
   static SerialInterface *interface;
-  static SerialCommand WifiESP::cmds[];
+  static SerialCommand cmds[];
 	
 };
 #endif

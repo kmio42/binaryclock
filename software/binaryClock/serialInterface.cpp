@@ -3,6 +3,7 @@
 //#include <TimeLib.h>
 #include "config.h"
 #include <Time.h>
+#include "wifi.h"
 BinaryClock *SerialInterface::binClock;
 SerialCommand SerialInterface::cmds[] = {
   SerialCommand("b", cmd_bright),
@@ -14,15 +15,16 @@ SerialCommand SerialInterface::cmds[] = {
   SerialCommand("h", cmd_help),
   SerialCommand("disp", cmd_disp),
   SerialCommand("effect", cmd_effect),
-  SerialCommand("amb", cmd_ambient)
-  //SerialCommand("wifistat", cmd_wifistat)
+  SerialCommand("amb", cmd_ambient),
+  SerialCommand("set",cmd_set),
+  SerialCommand("save",cmd_save)
 };
 
-SerialInterface::SerialInterface(Stream *serial, BinaryClock *binClock): serial(serial),
-    serial_commands_(serial, serial_command_buffer_, sizeof(serial_command_buffer_), "\r\n", " ")
+SerialInterface::SerialInterface(Stream *serial, BinaryClock *binClock): 
+    serial_commands_(serial, serial_command_buffer_, sizeof(serial_command_buffer_), "\r\n", " "),serial(serial)
     {
   SerialInterface::binClock = binClock;
-  for(int i = 0; i < sizeof(cmds)/sizeof(cmds[0]); i++) {
+  for(uint8_t i = 0; i < sizeof(cmds)/sizeof(cmds[0]); i++) {
     serial_commands_.AddCommand(&cmds[i]);
   }
   
@@ -66,12 +68,12 @@ void SerialInterface::printDisplay(uint8_t row1, uint8_t row2, uint8_t row3) {
   }
   serial_commands_.GetSerial()->println();
   serial_commands_.GetSerial()->println();
-  serial_commands_.GetSerial()->println("32 16  8  4  2  1");
+  serial_commands_.GetSerial()->println(F("32 16  8  4  2  1"));
   
 }
 void SerialInterface::cmd_unrecognized(SerialCommands* sender, const char* cmd)
 {
-  sender->GetSerial()->print("Unrecognized command [");
+  sender->GetSerial()->print(F("Unrecognized command ["));
   sender->GetSerial()->print(cmd);
   sender->GetSerial()->println("]\ncmd>");
 }
@@ -80,7 +82,7 @@ void SerialInterface::cmd_bright(SerialCommands* sender) {
   char* pwm_str = sender->Next();
   if (pwm_str == NULL)
   {
-    sender->GetSerial()->println("value missing\ncmd>");
+    sender->GetSerial()->println(F("value missing\ncmd>"));
     return;
   }
   int pwm = atoi(pwm_str);
@@ -191,7 +193,7 @@ void SerialInterface::cmd_effect(SerialCommands* sender) {
   char* param = sender->Next();
   if (param == NULL)
   {
-    sender->GetSerial()->println("value missing\ncmd>");
+    sender->GetSerial()->println(F("value missing\ncmd>"));
     return;
   }
   if(strcmp(param, "blink") == 0) {
@@ -211,12 +213,55 @@ void SerialInterface::cmd_effect(SerialCommands* sender) {
 void SerialInterface::cmd_ambient(SerialCommands* sender) {
   sender->GetSerial()->println(analogRead(A7));
 }
-void SerialInterface::cmd_wifistat(SerialCommands* sender) {
-  char *param = sender->Next();
-  if(param == NULL) {
-        sender->GetSerial()->println(F("wifistat - no parameter"));
 
+void SerialInterface::cmd_set(SerialCommands* sender) {
+  char* param = sender->Next();
+  if(strcmp(param,"bright") == 0) {
+    param = sender->Next();
+    if(strcmp(param,"auto") == 0) {
+      ClockConfig::ambient_brightness = true;
+      binClock->setBrightnessType(BinaryClock::BRIGHTNESSTYPE::AMBIENT);
+    }
+    else if(strcmp(param,"stat") == 0) {
+      ClockConfig::ambient_brightness = false;
+       binClock->setBrightnessType(BinaryClock::BRIGHTNESSTYPE::STATIC);
+    }
   }
-  sender->GetSerial()->print("wifistat ");
-  sender->GetSerial()->println(param);
+  else if(strcmp(param,"wifi") == 0) {
+    param = sender->Next();
+    if(strcmp(param,"on") == 0) {
+      ClockConfig::permanent_wifi=ClockConfig::WL_ALWAYS_ON;
+      WifiESP::power_on(false);
+    }
+    else if(strcmp(param,"sync") == 0) {
+      ClockConfig::permanent_wifi=ClockConfig::WL_SYNC_ON;
+    }
+    else if(strcmp(param,"off") == 0) {
+      ClockConfig::permanent_wifi=ClockConfig::WL_ALWAYS_OFF;
+      WifiESP::power_hard_off();
+    }
+    sender->GetSerial()->println(F("wifi: "));
+    sender->GetSerial()->println((ClockConfig::permanent_wifi==ClockConfig::WL_ALWAYS_ON)?"always on":(ClockConfig::permanent_wifi==ClockConfig::WL_SYNC_ON)?"on for sync":"always off");
+  }
+  else if(strcmp(param,"timezone") == 0) {
+    param = sender->Next();
+    if(param != NULL) {
+      ClockConfig::timezone = atoi(param);
+    }
+    sender->GetSerial()->println("timezone: ");
+    sender->GetSerial()->println(ClockConfig::timezone);
+  }
+  else if(strcmp(param,"summerwinter") == 0) {
+    param = sender->Next();
+    if(strcmp(param,"auto")) {
+      ClockConfig::summerWinterSwitch = true;
+    }
+    else if(strcmp(param, "man") == 0) {
+      ClockConfig::summerWinterSwitch = false;
+    }
+    sender->GetSerial()->println(F("daylight saving time adjustment: "));
+    sender->GetSerial()->println(ClockConfig::summerWinterSwitch?"on":"off");
+  }
+}
+void SerialInterface::cmd_save(SerialCommands* sender) {
 }

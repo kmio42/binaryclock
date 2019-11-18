@@ -26,7 +26,7 @@ void WifiESP::init(SerialInterface *interface) {
 void WifiESP::power_on(bool blocking) {
 	char start_str[] = "started";
 	uint8_t timeout = 100;
-	uint8_t ptr;
+	uint8_t ptr = 0;
 	
 	if(power == 0) {
 		BinaryClockHAL::wifi_power(true);
@@ -102,24 +102,25 @@ void WifiESP::config_menu() {
 }
 
 void WifiESP::cmd_ip(SerialCommands* sender) {
-  
+  (void *) sender;
 }
 void WifiESP::cmd_started(SerialCommands* sender) {
+  (void *) sender;
   powerstat = true;
 }
 void WifiESP::cmd_wifistat(SerialCommands* sender) {
   char* stat_str = sender->Next();
   if (stat_str == NULL)
   {
-    sender->GetSerial()->println("unknown wifistat");
+    sender->GetSerial()->println(F("unknown wifistat"));
     return;
   }
-  wifistat = atoi(stat_str);
+  wifistat = static_cast<enum WL_STATUS>(atoi(stat_str));
 }
 void WifiESP::update() {
   power_on(true);
-  Serial.println("update");
+  Serial.println(F("update"));
 }
 void WifiESP::cmd_httpresult(SerialCommands* sender) {
-  
+  (void *) sender;
 }
