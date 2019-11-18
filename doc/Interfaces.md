@@ -32,6 +32,8 @@ Features:
 - [x] configuration mode is enabled by serial command
 - [x] provides an interface for microcontroller to send http/https GET requests, e.g. for reading a configuration file
 - [x] provides a rudimentary interface for converting serial to wifi by providing a webserver
+- [x] firmware for ESP8266 can be uploaded over WiFi
+- [x] provides mDNS deamon, so module is accessable by name `binaryclock.local`
 - [ ] serial interface in both, access point and client mode
 - [ ] configuration page offer additional configuration options for binary clock, like switching times for night mode
 
@@ -44,6 +46,7 @@ The firmware for ESP8266 extension of clock (wifiExtension) supports following c
 * `ntp` - get time per NTP and respond with `st `*`time`* command for clock
 * `GET `*`URL`* - perform an http get request - return `httpresult `*`result code`* command, pass payload afterwards to serial interface
 * `GETS `*`URL`* - perform an https get request - return `httpresult `*`result code`* command, pass payload afterwards to serial 
+* `update` - enables possibility for OTA update. Update feature is accessible by URL `binaryclock.local/firmware` 
 
 If module is connected to a WLAN, it provides an http-server on port 80, to interact with serial command line interface. If opened in browser, it shows up: "CMD-Line Binary-Clock".
 The arguments given by HTTP-GET request are converted to a command on serial interface. The answer of clock microcontroller is returned in payload.
