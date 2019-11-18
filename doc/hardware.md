@@ -37,11 +37,9 @@ not powered (of course backup battery is needed)
 ### Ambient Light Sensor
 The selected light sensor is `APDS-9007-020`. Quote from datasheet:
 
-"This device provides a Logarithmic response over a wide dynamic range of 3 lux to 70K lux and has a low sensitivity 
-variation  across  various  light  sources.  It  is  well  suited for applications that operates under high ambient brightness."
+> "This device provides a Logarithmic response over a wide dynamic range of 3 lux to 70K lux and has a low sensitivity variation  across  various  light  sources.  It  is  well  suited for applications that operates under high ambient brightness."
 
-The sensor is well suited for the given scenario, especially the detection of very low brightness allows a resilient handling of dark mode
-at night.
+The sensor is well suited for the given scenario, especially the detection of very low brightness allows a resilient handling of dark mode at night. As the output of sensor is logarithmical and the PWM tables for LED-Matrix output is logarithmic, mapping from sensor values to output brightness is simple (mostly linear function).
 
 Some example values are given in table below (no strong measurement setting):
 
