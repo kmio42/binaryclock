@@ -147,9 +147,20 @@ void BinaryClock::setBrightnessType(BRIGHTNESSTYPE type) {
   brighttype = type;
 }
 
-void BinaryClock::setAmbientLight(uint8_t val) {
+void BinaryClock::setAmbientLight(unsigned int val) {
   if(brighttype == AMBIENT) {
-    BinaryClockHAL::setBrightness(val + brightness/5);
+    if(val < 125) {
+      BinaryClockHAL::setBrightness(8 + brightness/2);
+    }
+    else if(val < 180) {
+      BinaryClockHAL::setBrightness(30 + val/8 + brightness/5);
+    }
+    else if(val < 500) {
+      BinaryClockHAL::setBrightness(45 + val/20 + brightness/5);
+    }
+    else {
+      BinaryClockHAL::setBrightness(52 + val/20 + brightness/5);
+    }
   }
 }
 

@@ -73,7 +73,7 @@ void loop() {
     binClock.displayTick();
     ambientLight = getAmbientLight(analogRead(A7));
 //    Serial.println(ambientLight);
-    binClock.setAmbientLight(ambientLight/10 + 20);
+    binClock.setAmbientLight(ambientLight);
   }
   
   if(millis() > nextTimeUpdateRTC) {

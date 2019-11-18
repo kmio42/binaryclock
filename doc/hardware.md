@@ -34,6 +34,29 @@ The chosen real time clock `ds3231` is a very precise clock ic with support of b
 With this feature the clock can run a long time without readjustment of time, even if clock is
 not powered (of course backup battery is needed)
 
+### Ambient Light Sensor
+The selected light sensor is `APDS-9007-020`. Quote from datasheet:
+
+"This device provides a Logarithmic response over a wide dynamic range of 3 lux to 70K lux and has a low sensitivity 
+variation  across  various  light  sources.  It  is  well  suited for applications that operates under high ambient brightness."
+
+The sensor is well suited for the given scenario, especially the detection of very low brightness allows a resilient handling of dark mode
+at night.
+
+Some example values are given in table below (no strong measurement setting):
+
+| Situation | Value |
+| ---       | --- |
+| bright sun in summer - direct | 970 |
+| bright sun in summer - indoor indirect| 750 |
+| desk lamp | 570 |
+| ceiling light | 440 |
+| cloudy in summer - indoor indirect | 140 |
+| dimmed indirect LED light | 130 |
+| absolute darkness | 122 |
+
+It is hard to distinguish absolute darkness from low light, unfortunately the required brightness setting differs significantly.
+
 ### Button
 
 ### ESP (WLAN)

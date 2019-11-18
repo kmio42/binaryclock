@@ -22,7 +22,7 @@ public:
     
     void setBrightnessType(BRIGHTNESSTYPE type);
     void setBrightness(uint8_t val);
-    void setAmbientLight(uint8_t val);
+    void setAmbientLight(unsigned int val);
     
     static void rtcSet();
     static void rtcGet();
