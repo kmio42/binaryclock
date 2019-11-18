@@ -8,6 +8,7 @@
 
 ESP8266WebServer server(80);
 bool mdns_setup = false;
+
 void handleRoot() {
   String cmd;
   String message = "CMD-Line Binary-Clock\n";
