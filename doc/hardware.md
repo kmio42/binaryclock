@@ -47,7 +47,7 @@ Some example values are given in table below (no strong measurement setting, mea
 | ---       | --- |
 | bright sun in summer - direct | 970 |
 | bright sun in summer - indoor indirect| 750 |
-| cloudy in summer - indoor indirect | 610 |
+| cloudy - indoor indirect | 610 |
 | desk lamp | 570 |
 | ceiling light | 440 |
 | dimmed indirect LED light | 130 |
