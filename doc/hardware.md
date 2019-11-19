@@ -41,7 +41,7 @@ The selected light sensor is `APDS-9007-020`. Quote from datasheet:
 
 The sensor is well suited for the given scenario, especially the detection of very low brightness allows a resilient handling of dark mode at night. As the output of sensor is logarithmical and the PWM tables for LED-Matrix output is logarithmic, mapping from sensor values to output brightness is simple (mostly linear function).
 
-Some example values are given in table below (no strong measurement setting):
+Some example values are given in table below (no strong measurement setting, measured values from 10-bit ADC with 1.1V reference):
 
 | Situation | Value |
 | ---       | --- |
