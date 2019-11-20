@@ -134,7 +134,7 @@ static void BinaryClockHAL::setBrightness(uint8_t brightness) {
        */
       if(minbright == 0) {
         for(int i = 0; i < 6; i++)
-          leds[i] <<=3;
+          leds[i] >>=3;
       }
       minbright = 1; 
       OCR1B = pgm_read_word_near(pwm_table + brightness);
