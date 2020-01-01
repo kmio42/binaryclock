@@ -18,7 +18,7 @@ void WifiESP::init(SerialInterface *interface) {
   powerstat = false;
   wifistat = WL_STATUS::WL_IDLE_STATUS;
   WifiESP::interface = interface;
-  for(int i = 0; i < sizeof(cmds)/sizeof(cmds[0]); i++) {
+  for(unsigned int i = 0; i < sizeof(cmds)/sizeof(cmds[0]); i++) {
     interface->addCmd(&cmds[i]);
   }
 }
@@ -101,13 +101,13 @@ void WifiESP::config_menu() {
   Serial.println("conf");
 }
 
-void WifiESP::cmd_ip(SerialCommands* sender) {
-  (void *) sender;
+void WifiESP::cmd_ip(__attribute__((unused)) SerialCommands* sender) {
 }
-void WifiESP::cmd_started(SerialCommands* sender) {
-  (void *) sender;
+
+void WifiESP::cmd_started(__attribute__((unused)) SerialCommands* sender) {
   powerstat = true;
 }
+
 void WifiESP::cmd_wifistat(SerialCommands* sender) {
   char* stat_str = sender->Next();
   if (stat_str == NULL)
@@ -117,10 +117,10 @@ void WifiESP::cmd_wifistat(SerialCommands* sender) {
   }
   wifistat = static_cast<enum WL_STATUS>(atoi(stat_str));
 }
+
 void WifiESP::update() {
   power_on(true);
   Serial.println(F("update"));
 }
-void WifiESP::cmd_httpresult(SerialCommands* sender) {
-  (void *) sender;
+void WifiESP::cmd_httpresult(__attribute__((unused)) SerialCommands* sender) {
 }
