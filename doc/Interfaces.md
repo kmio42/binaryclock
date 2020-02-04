@@ -59,3 +59,8 @@ For example:
 
 * Note: The first key becomes the serial command, all following values (also for other keys) are concatenated by space
 
+### Firmware update
+Firmware update can be done by UART-Adapter or over the air. For latter, the firmware provides an upload interface by URL `binaryclock.local/firmware` 
+Default user and password is "admin".
+*Note: URL is only activated after special command from microcontroller. For default firmware this is the case in last step of [configuration mode](UserInterface.md)
+

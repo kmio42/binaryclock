@@ -10,9 +10,22 @@ The concrete function of keys depend on state.
 
 ### General Settings
 For General Settings like Wifi-Settings, power off binary clock and press **SET** key during power on.
-The display begins to blink, to show configuration mode.
+The display begins to blink, to show configuration mode. Values can be changed by **+** and **-** keys,
+confirmed and saved by pressing **SET** long. Latter also will switch to next configuration according to following table.
+State is shown in *hour* display as binary number, setting in *minute* display, while in display of *seconds* all leds are on. 
+
+| State | Configuration | Options | Comment |
+| ---   | ---           |   ---   |         | 
+|  0    | START         |       - | all leds of minutes and seconds are blinking, <br>state may be bypassed by key bouncing  |
+|  1    | WIFI          | 1 - always off,<br> 2 - on for synchronization,<br> 4 - always on | |
+|  2    | BRIGHTNESS TYPE | 1 - static,<br> 2 - ambient light adapted |  |
+|  3    | BRIGHTNESS VALUE | value between 1 and 10 | default brightness after power on or reset
+|  4    | WIFI update mode | - | blinking of minutes and seconds, <br>sets wifi module in *update* mode <br>(firmware update possible), <br>no further configuration for clock. <br>Leave mode by power down |
+
 The Wifi-module will open a network called "Binaryclock", which can be joined by PC or Smartphone.
 Open Browser with IP-Adress **192.168.4.1** to configure Wifi.
+
+
 
 ### Time Settings
 1. Clock has to be in time-showing state (default)
@@ -43,6 +56,13 @@ command line interface accepts following commands:
   * `blink`
   * `flicker`
   * `heart` (like linux heartbeat trigger for LEDs)
+* `set [option]` - show option
+* `set [option] [value]` - set option, options can be:
+  * `wifi` - `on` *(always on)*, `sync` *(on for synchronization)*, `off` - *(always off)*
+  * `bright` - `auto` *(ambient light sensor on)*, `stat` *(static brightness)*
+  * `timezone` - integer for time shift in reference to UTC
+  * `summerwinter` - `auto` *(automatic switch for daylight saving time)*, `man`*(no automatic switch)*
+* `save` save options to EEPROM
 * `h` - print help
 
 for background details look at: [Interfaces](Interfaces.md)
@@ -53,7 +73,7 @@ If opened in browser, it shows up: "CMD-Line Binary-Clock".
 The arguments given by HTTP-GET request are converted to a command on serial interface. The answer of clock microcontroller is returned in payload.
 
 For example:
-1. **binaryclock.local/effect=blink**
+1. **binaryclock.local/?effect=blink**
 1. is converted to following serial command by ESP8266:
 1. **effect blink**
 1. so display of clock begins to blink
