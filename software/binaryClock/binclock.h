@@ -8,8 +8,8 @@ class BinaryClock {
   
 public: 
     enum SOFTKEY { KEY_PLUS, KEY_MINUS, KEY_SET };
-    enum DISPEFFECT {NORMAL, BLINK, FLICKER, HEARTBEAT};
-    enum BRIGHTNESSTYPE {STATIC, AMBIENT};
+    enum DISPEFFECT {NORMAL = 0, BLINK, FLICKER, HEARTBEAT};
+    enum BRIGHTNESSTYPE {STATIC=0, AMBIENT};
     BinaryClock();
       
     //INCOMMING SIGNALS
@@ -17,6 +17,7 @@ public:
     void keyPress(SOFTKEY key);
     void manualMode(uint8_t row[], unsigned int timeout);
     void normalMode();
+    void configMode();
     
     void setDisplayEffect(DISPEFFECT type);
     
@@ -25,8 +26,9 @@ public:
     void setAmbientLight(unsigned int val);
     
     static void rtcSet();
+    static void rtcSet(bool summertime);
     static void rtcGet();
-    static boolean isSummerTime(unsigned int yyyy, uint8_t mnth, uint8_t dd, uint8_t hh, uint8_t tzHours);
+    static boolean isSummerTime(unsigned int yyyy, unsigned int mnth, unsigned int dd, unsigned int hh, int tzHours);
 
 private:
   void updateDisplay(uint8_t row1, uint8_t row2, uint8_t row3);
@@ -39,7 +41,7 @@ private:
 
   int temp;
   int counter;
-  enum STATES {SHOW_CLK, SET_HOUR, SET_MINUTE, SET_BRIGHTNESS, MANUAL};
+  enum STATES {SHOW_CLK, SET_HOUR, SET_MINUTE, SET_BRIGHTNESS, MANUAL, CONF,SET_WIFI, SET_BRIGHTTYPE, SET_DEFAULTBRIGHT, WIFI_UPDATE};
   enum DISPEFFECT effect;
   enum STATES state;
 };

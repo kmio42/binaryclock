@@ -26,6 +26,6 @@ This project is about an Arduino/Genuino compatible binary clock.
      * adjust time
      * adjust brightness
 - [x] Serial Command Line for Gadget Mode
-- [ ] Selection of Brightness mode (ambient or manual) without reprogramming
-- [ ] Configuration of timezone and daylight saving time without reprogramming
+- [x] Selection of Brightness mode (ambient or manual) without reprogramming
+- [x] Configuration of timezone and daylight saving time without reprogramming
 - [ ] Adjustment of daylight saving time in offline mode (without WLAN)

@@ -8,9 +8,15 @@ public:
       WL_SYNC_ON,
       WL_ALWAYS_ON
     };
-    static boolean summerWinterSwitch;
-    static int8_t timezone;
-    static uint8_t permanent_wifi;
-    static boolean ambient_brightness;
+    struct conf {
+      int8_t timezone;
+      boolean summerWinterSwitch;
+      uint8_t brightness_type;
+      uint8_t permanent_wifi;
+      uint8_t default_brightness;
+    };
+    static struct conf config;
+    static void load();
+    static void save();
 };
 #endif

@@ -140,25 +140,28 @@ void SerialInterface::cmd_setTime(SerialCommands* sender) {
   sender->GetSerial()->println(F("OK. Date+Time set.\ncmd>"));
 
   param = sender->Next();
-  if(param != NULL) {
-    if(*param == 'U') {
-      hh = ClockConfig::timezone;
-      if(BinaryClock::isSummerTime(yyyy,mnth,dd,hh,0) && ClockConfig::summerWinterSwitch) {
-        hh++;
-      }
-      adjustTime(hh*3600);
+  if(strcmp(param,"U") == 0) {
+    hh = ClockConfig::config.timezone;
+    bool summertime = (BinaryClock::isSummerTime(yyyy,mnth,dd,hh,0) && ClockConfig::config.summerWinterSwitch);
+    if(summertime) {
+      hh++;
     }
+    adjustTime(hh*3600);
+    //BinaryClock::rtcSet(summertime);
+    BinaryClock::rtcSet();
   }
-  BinaryClock::rtcSet();
+  else {
+    BinaryClock::rtcSet();
+  }
 }
 
-void SerialInterface::cmd_keyPlus(SerialCommands* sender) {
+void SerialInterface::cmd_keyPlus(__attribute__((unused)) SerialCommands* sender) {
   binClock->keyPress(BinaryClock::SOFTKEY::KEY_PLUS);
 }
-void SerialInterface::cmd_keyMinus(SerialCommands* sender) {
+void SerialInterface::cmd_keyMinus(__attribute__((unused)) SerialCommands* sender) {
   binClock->keyPress(BinaryClock::SOFTKEY::KEY_MINUS);
 }
-void SerialInterface::cmd_keySet(SerialCommands* sender) {
+void SerialInterface::cmd_keySet(__attribute__((unused)) SerialCommands* sender) {
   binClock->keyPress(BinaryClock::SOFTKEY::KEY_SET);
 }
 void SerialInterface::cmd_getTime(SerialCommands* sender) {
@@ -219,49 +222,50 @@ void SerialInterface::cmd_set(SerialCommands* sender) {
   if(strcmp(param,"bright") == 0) {
     param = sender->Next();
     if(strcmp(param,"auto") == 0) {
-      ClockConfig::ambient_brightness = true;
+      ClockConfig::config.brightness_type = BinaryClock::BRIGHTNESSTYPE::AMBIENT;
       binClock->setBrightnessType(BinaryClock::BRIGHTNESSTYPE::AMBIENT);
     }
     else if(strcmp(param,"stat") == 0) {
-      ClockConfig::ambient_brightness = false;
+      ClockConfig::config.brightness_type = BinaryClock::BRIGHTNESSTYPE::STATIC;
        binClock->setBrightnessType(BinaryClock::BRIGHTNESSTYPE::STATIC);
     }
   }
   else if(strcmp(param,"wifi") == 0) {
     param = sender->Next();
     if(strcmp(param,"on") == 0) {
-      ClockConfig::permanent_wifi=ClockConfig::WL_ALWAYS_ON;
+      ClockConfig::config.permanent_wifi=ClockConfig::WL_ALWAYS_ON;
       WifiESP::power_on(false);
     }
     else if(strcmp(param,"sync") == 0) {
-      ClockConfig::permanent_wifi=ClockConfig::WL_SYNC_ON;
+      ClockConfig::config.permanent_wifi=ClockConfig::WL_SYNC_ON;
     }
     else if(strcmp(param,"off") == 0) {
-      ClockConfig::permanent_wifi=ClockConfig::WL_ALWAYS_OFF;
+      ClockConfig::config.permanent_wifi=ClockConfig::WL_ALWAYS_OFF;
       WifiESP::power_hard_off();
     }
     sender->GetSerial()->println(F("wifi: "));
-    sender->GetSerial()->println((ClockConfig::permanent_wifi==ClockConfig::WL_ALWAYS_ON)?"always on":(ClockConfig::permanent_wifi==ClockConfig::WL_SYNC_ON)?"on for sync":"always off");
+    sender->GetSerial()->println((ClockConfig::config.permanent_wifi==ClockConfig::WL_ALWAYS_ON)?"always on":(ClockConfig::config.permanent_wifi==ClockConfig::WL_SYNC_ON)?"on for sync":"always off");
   }
   else if(strcmp(param,"timezone") == 0) {
     param = sender->Next();
     if(param != NULL) {
-      ClockConfig::timezone = atoi(param);
+      ClockConfig::config.timezone = atoi(param);
     }
     sender->GetSerial()->println("timezone: ");
-    sender->GetSerial()->println(ClockConfig::timezone);
+    sender->GetSerial()->println(ClockConfig::config.timezone);
   }
   else if(strcmp(param,"summerwinter") == 0) {
     param = sender->Next();
     if(strcmp(param,"auto")) {
-      ClockConfig::summerWinterSwitch = true;
+      ClockConfig::config.summerWinterSwitch = true;
     }
     else if(strcmp(param, "man") == 0) {
-      ClockConfig::summerWinterSwitch = false;
+      ClockConfig::config.summerWinterSwitch = false;
     }
     sender->GetSerial()->println(F("daylight saving time adjustment: "));
-    sender->GetSerial()->println(ClockConfig::summerWinterSwitch?"on":"off");
+    sender->GetSerial()->println(ClockConfig::config.summerWinterSwitch?"on":"off");
   }
 }
-void SerialInterface::cmd_save(SerialCommands* sender) {
+void SerialInterface::cmd_save(__attribute__((unused)) SerialCommands*) {
+  ClockConfig::save();
 }

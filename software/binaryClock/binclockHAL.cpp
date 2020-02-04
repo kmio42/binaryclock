@@ -88,7 +88,7 @@ void BinaryClockHAL::init() {
   init(1000);
 }
 
-static void BinaryClockHAL::init(unsigned int frequency) {
+void BinaryClockHAL::init(unsigned int frequency) {
   DDRC &= ~((1 << PC0) | (1 << PC1));
   PORTC |= (1 << PC0) | (1 << PC1);
   //Timer1 => Fast PWM-Mode, Upper value OCR1A without (native) PWM Outputs
@@ -109,7 +109,7 @@ static void BinaryClockHAL::init(unsigned int frequency) {
   analogReference(INTERNAL);
 }
 
-static void BinaryClockHAL::display(uint8_t row1,uint8_t row2,uint8_t row3) {
+void BinaryClockHAL::display(uint8_t row1,uint8_t row2,uint8_t row3) {
   uint8_t i=0;
   for(i=0;i<6;i++) {
     if(!minbright)
@@ -122,7 +122,7 @@ static void BinaryClockHAL::display(uint8_t row1,uint8_t row2,uint8_t row3) {
   }
 }
 
-static void BinaryClockHAL::setBrightness(uint8_t brightness) {
+void BinaryClockHAL::setBrightness(uint8_t brightness) {
     if(brightness > 100) {
       brightness = 100;
     }
@@ -139,17 +139,21 @@ static void BinaryClockHAL::setBrightness(uint8_t brightness) {
       minbright = 1; 
       OCR1B = pgm_read_word_near(pwm_table + brightness);
     } else {
+      if(minbright == 1) {
+        for(int i = 0; i < 6; i++)
+          leds[i] <<=3;
+      }
       minbright = 0;
       OCR1B = pgm_read_word_near(pwm_table + brightness-49);
     }
     BinaryClockHAL::brightness = brightness;
 }
 
-static void BinaryClockHAL::wifi_power(bool onoff) {
+void BinaryClockHAL::wifi_power(bool onoff) {
   digitalWrite(A2,onoff);
 }
 
-static uint8_t BinaryClockHAL::getKeyRpt( uint8_t key_mask )
+uint8_t BinaryClockHAL::getKeyRpt( uint8_t key_mask )
 {
   cli();                                          // read and clear atomic !
   key_mask &= key_rpt;                            // read key(s)
@@ -158,7 +162,7 @@ static uint8_t BinaryClockHAL::getKeyRpt( uint8_t key_mask )
   return key_mask;
 }
 
-static uint8_t BinaryClockHAL::getKeyShort( uint8_t key_mask ) {
+uint8_t BinaryClockHAL::getKeyShort( uint8_t key_mask ) {
   cli();
   key_mask=~key_state & key_mask;       // read key state and key press atomic !
   key_mask &= key_press;                // read key(s)
@@ -167,7 +171,7 @@ static uint8_t BinaryClockHAL::getKeyShort( uint8_t key_mask ) {
   return key_mask;
 }
 
-static uint8_t BinaryClockHAL::getKeyLong( uint8_t key_mask ) {
+uint8_t BinaryClockHAL::getKeyLong( uint8_t key_mask ) {
   cli();
   key_mask &= key_rpt;                  // read key(s)
   key_rpt ^= key_mask;                  // clear key(s)
