@@ -15,11 +15,11 @@ confirmed and saved by pressing **SET** long. Latter also will switch to next co
 State is shown in *hour* display as binary number, setting in *minute* display, while in display of *seconds* all leds are on. 
 
 | State | Configuration | Options | Comment |
-| ---   | ---           |   ---   |         | 
+| ---   | --- | --- | --- | 
 |  0    | START         |       - | all leds of minutes and seconds are blinking, <br>state may be bypassed by key bouncing  |
 |  1    | WIFI          | 1 - always off,<br> 2 - on for synchronization,<br> 4 - always on | |
 |  2    | BRIGHTNESS TYPE | 1 - static,<br> 2 - ambient light adapted |  |
-|  3    | BRIGHTNESS VALUE | value between 1 and 10 | default brightness after power on or reset
+|  3    | BRIGHTNESS VALUE | value between 1 and 10 | default brightness after power on or reset |
 |  4    | WIFI update mode | - | blinking of minutes and seconds, <br>sets wifi module in *update* mode <br>(firmware update possible), <br>no further configuration for clock. <br>Leave mode by power down |
 
 The Wifi-module will open a network called "Binaryclock", which can be joined by PC or Smartphone.
