@@ -49,7 +49,7 @@ In manual mode, following instructions are for absolute setting of brightness:
 command line interface accepts following commands:
 * `b [value]` - set brightness to value (possible between 0 and 100)
 * `t` - print time and date to command line
-* `st H:M[:S] [d.m.yyyy] [UTC]` - set time to given value. Attribute U means UTC. Then time offset and daylight saving time is considered according to settings
+* `st H:M[:S] [d.m.yyyy] [UTC]` - set time to given value. If Attribute UTC is given, time offset and daylight saving time are considered according to settings. Otherwise time is interpreted as local time.
 * `disp row1 row2 row3` - displays arbitrary numbers as binary on display
 * `effect [mode]` - set effect mode of display, mode can be:
   * `normal`
