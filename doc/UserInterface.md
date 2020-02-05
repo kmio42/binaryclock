@@ -45,7 +45,7 @@ In manual mode, following instructions are for absolute setting of brightness:
 1. Adjust brightness setting with short pressing "**+**" and "**-**" keys
 1. Wait 3 seconds to return to time-showing state
 
-## Serial command line Interface
+## Serial Command Line Interface
 command line interface accepts following commands:
 * `b [value]` - set brightness to value (possible between 0 and 100)
 * `t` - print time and date to command line
